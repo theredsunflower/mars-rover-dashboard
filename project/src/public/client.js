@@ -8,8 +8,9 @@ let store = {
 const root = document.getElementById('root')
 
 const updateStore = (store, newState) => {
-    store = Object.assign(store, newState)
-    render(root, store)
+    store = Object.assign(store, newState);
+    //console.log(store);
+    render(root, store);
 }
 
 const render = async (root, state) => {
@@ -19,8 +20,7 @@ const render = async (root, state) => {
 
 // create content
 const App = (state) => {
-    let { rovers, apod } = state
-
+    let { rovers, apod } = state;
     return `
         <header></header>
         <main>
@@ -65,23 +65,24 @@ const Greeting = (name) => {
 
 // Example of a pure function that renders infomation requested from the backend
 const ImageOfTheDay = (apod) => {
-
     // If image does not already exist, or it is not from today -- request it again
-    const today = new Date()
-    const photodate = new Date(apod.date)
-    console.log(photodate.getDate(), today.getDate());
+    const today = new Date();
+    const photodate = new Date(apod.date);
+    //console.log(apod.image.url);
+    //console.log(photodate);
+    //console.log(photodate.getDate(), today.getDate());
+    //console.log(photodate.getDate() === today.getDate());
 
-    console.log(photodate.getDate() === today.getDate());
     if (!apod || apod.date === today.getDate() ) {
-        getImageOfTheDay(store)
+        getImageOfTheDay(store);
+        return;
     }
-
     // check if the photo of the day is actually type video!
-    if (apod.media_type === "video") {
+    if (apod.image.media_type === "video") {
         return (`
-            <p>See today's featured video <a href="${apod.url}">here</a></p>
-            <p>${apod.title}</p>
-            <p>${apod.explanation}</p>
+            <p>See today's featured video <a href="${apod.image.url}">here</a></p>
+            <p>${apod.image.title}</p>
+            <p>${apod.image.explanation}</p>
         `)
     } else {
         return (`
@@ -95,11 +96,14 @@ const ImageOfTheDay = (apod) => {
 
 // Example API call
 const getImageOfTheDay = (state) => {
-    let { apod } = state
-
+    let { apod } = state;
+    //console.log({apod});
     fetch(`http://localhost:3000/apod`)
         .then(res => res.json())
-        .then(apod => updateStore(store, { apod }))
-
-    return data
+        .then((apod) => {
+            //console.log(apod);
+            updateStore(store, {apod})
+        })
+        //.then(apod => updateStore(store, { apod }))
+    return state
 }
