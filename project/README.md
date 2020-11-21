@@ -20,7 +20,7 @@ We have supplied some of the foundational code for you. So follow these steps to
 
 ```yarn install``` 
 
-**If you don’t have yarn installed globally, follow their installation documentation here according to your operating system: https://yarnpkg.com/lang/en/docs/install
+**If you don’t have yarn installed globally, follow their installation documentation here according to your operating system: https://yarnpkg.com/lang/en/docs/install**
 
 2. Next you'll need a NASA developer API key in order to access the API endpoints. To do that, go here: https://api.nasa.gov/. If you want to simply look around at what api endpoints NASA offers, you can use their provided DEMO_KEY to do this.
 
@@ -42,7 +42,7 @@ To complete this project, your UI must do the following:
 
 - [ ] Be responsive. Needs to look good(aka not broken) on phones(max width 768px) and desktop(min-width 991px, max-width 1824px). Tablet view is optional.
 - [ ] Provide a way to dynamically switch the UI to view one of the three rovers 
-**This can be done using tabs, buttons, or any other UI control
+**This can be done using tabs, buttons, or any other UI control**
 
 To complete this project, your frontend code must:
 

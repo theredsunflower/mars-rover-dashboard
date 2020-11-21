@@ -45,7 +45,8 @@ const App = (state) => {
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
-    render(root, store)
+    render(root, store);
+    getPhotos('curiosity');
 })
 
 // ------------------------------------------------------  COMPONENTS
@@ -106,4 +107,11 @@ const getImageOfTheDay = (state) => {
         })
         //.then(apod => updateStore(store, { apod }))
     return state
+}
+const getPhotos = (rover) => {
+    fetch(`http://localhost:3000/${rover}`)
+    .then(res => res.json())
+    .then((photos) => {
+        console.log(photos);
+    })
 }
