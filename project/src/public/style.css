@@ -21,41 +21,42 @@ img {
   max-width: 100%;
   height: auto;
 }
-
-/* -------------------  MOBILE  --------------------- */
-
+header {
+  background: black;
+  color: white;
+  padding: 10px;
+}
+#main-menu ul {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.menu-item {
+  font-size: 20px;
+  background-color: white;
+  color: black;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 2px;
+}
 body {
   display: flex;
   flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
 }
-
-header {
-  /* header styles */
-}
-
 main {
-  flex: 1;
-  padding: 20px;
+  padding: 2.5%;
 }
-
-footer {
-  /* footer styles */
+#photos {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
-/* -------------------  TABLET  --------------------- */
-@media (min-width: 768px) {
-  /* use mobile */
-}
-
-/* -------------------  DESKTOP  -------------------- */
-
-@media (min-width: 1224px) {
-  /* use mobile */
-}
-
-/* -------------------  LARGE SCREENS  -------------- */
-
-@media (min-width: 1824px) {
-  /* use mobile */
+.rover-item {
+  width: calc(50% - 10px);
+  margin: 5px;
+  padding: 10px;
+  border-radius: 4px;
+  background-color: lightblue;
 }

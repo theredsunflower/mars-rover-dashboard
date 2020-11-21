@@ -5,7 +5,8 @@ let store = {
 }
 
 // add our markup to the page
-const root = document.getElementById('root')
+const root = document.getElementById('root');
+const photos = document.getElementById('photos');
 
 const updateStore = (store, newState) => {
     store = Object.assign(store, newState);
@@ -17,37 +18,40 @@ const render = async (root, state) => {
     root.innerHTML = App(state)
 }
 
-
 // create content
 const App = (state) => {
     let { rovers, apod } = state;
     return `
-        <header></header>
-        <main>
-            ${Greeting(store.user.name)}
-            <section>
-                <h3>Put things on the page!</h3>
-                <p>Here is an example section.</p>
-                <p>
-                    One of the most popular websites at NASA is the Astronomy Picture of the Day. In fact, this website is one of
-                    the most popular websites across all federal agencies. It has the popular appeal of a Justin Bieber video.
-                    This endpoint structures the APOD imagery and associated metadata so that it can be repurposed for other
-                    applications. In addition, if the concept_tags parameter is set to True, then keywords derived from the image
-                    explanation are returned. These keywords could be used as auto-generated hashtags for twitter or instagram feeds;
-                    but generally help with discoverability of relevant imagery.
-                </p>
+            <div>
                 ${ImageOfTheDay(apod)}
-            </section>
-        </main>
-        <footer></footer>
-    `
+            </div
+    `;
 }
 
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
     render(root, store);
-    getPhotos('curiosity');
+    document.getElementById('curiosity').addEventListener('click', function() {
+        clearScreen('root');
+        clearScreen('photos');
+        getPhotos('curiosity');
+    });
+    document.getElementById('opportunity').addEventListener('click', function() {
+        clearScreen('root');
+        clearScreen('photos');
+        getPhotos('opportunity');
+    });
+    document.getElementById('spirit').addEventListener('click', function() {
+        clearScreen('root');
+        clearScreen('photos');
+        getPhotos('spirit');
+    });
+    document.getElementById('home').addEventListener('click', function() {
+        clearScreen('photos');
+        render(root, store);
+    });
 })
+
 
 // ------------------------------------------------------  COMPONENTS
 
@@ -112,6 +116,44 @@ const getPhotos = (rover) => {
     fetch(`http://localhost:3000/${rover}`)
     .then(res => res.json())
     .then((photos) => {
-        console.log(photos);
+        renderPhotos(Object.values(photos)[0]);;
     })
+}
+
+function renderPhotos(photos) {
+    const photoArray = photos.photos;
+    //console.log(photoArray);
+    const adjustedArray = photoArray.map(info);
+    const newHTML = displayPhotos(adjustedArray);
+    //console.log(adjustedArray);
+}
+
+const info = (photo) => {
+    const relevantInfo = {
+        launch: photo.rover.launch_date,
+        land: photo.rover.landing_date,
+        status: photo.rover.status,
+        img: photo.img_src
+    }
+    return relevantInfo;
+}
+
+const displayPhotos = (relevantInfo) => {
+    relevantInfo.forEach(x => {
+        const url = x.img;
+        const launch = x.launch;
+        const land = x.land;
+        const status = x.status;
+        document.getElementById('photos').innerHTML += `<div class="rover-item"><img src="${url}"><p><b>Launch Date:</b> ${launch}</p><p><b>Landing Date:</b> ${land}</p><p><b>Status:</b> ${status}</p></div>`;
+    });
+    //console.log(trythis);
+}
+//Launch Date, Landing Date, Status, Most recently available photos, date most recent photos were taken
+
+function renderImg (url) {
+    console.log(url);
+}
+
+function clearScreen(element) {
+    document.getElementById(element).innerHTML = '';
 }
