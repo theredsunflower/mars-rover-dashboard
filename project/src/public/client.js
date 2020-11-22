@@ -102,70 +102,44 @@ const render = async (root, state) => {
 }
 const getRoverData = async (rover) => {
     fetch(`http://localhost:3000/${rover}`)
-    .then(res => res.json()).then((data) => {
-        console.log(data.manifest.photos);
-        return;
-    })
-    /*.then((data) => {
+    .then(res => res.json())
+    .then((data) => {
         const info = document.getElementById('info');
-        const photos = document.getElementById('photos');
-        info.innerHTML = getHeading(data);
-        photos.innerHTML += getPhotos(data);
-    });*/
-   /* .then((data) => {
-        getHeading(rover);
-        getRoverInfo(rover)
-        getPhotos(data);
-       // return Object.values(data));
-    });*/
+        info.innerHTML = getHeading(data.manifest[0]);
+        document.getElementById('photos').innerHTML += `<h3>Latest Activity</h3>`;
+        getPhotos(data.manifest[1]);
+        if(data.manifest[0].status === 'complete') {
+            document.getElementById('photos').innerHTML += `<h2 class="rover-heading">Old Photos</h2>`;
+            getPhotos(data.manifest[2]);
+        }        
+        return
+    });
 }
 
-function getHeading (data) {
-    const manifest = Object.values(data)[0].photo_manifest;
-    return `<h2>${manifest.name}</h2><p><b>Launch Date:</b> ${manifest.launch_date}<br><b>Landing Date:</b> ${manifest.landing_date}<br><b>Status:</b> ${manifest.status}<br><b>Last Updated:</b> ${manifest.max_date}`;
-    //return document.getElementById('photos').innerHTML += `<h2 class="rover-heading">${rover}</h2>`;
+function getHeading (manifest) {
+    return `<h2 class="rover-heading"><span class="subheading">Rover Name: </span><br>${manifest.name}</h2><p><span class="uppercase">Launch Date:</span> ${manifest.launch_date}<br><span class="uppercase">Landing Date:</span> ${manifest.landing_date}<br><span class="uppercase">Last Updated:</span> ${manifest.max_date}<br><span class="uppercase">Status:</span> ${manifest.status}`;
 }
 
-function getPhotos(data) {
-    const manifest = Object.values(data)[0].photo_manifest;
-    if (manifest.status === 'active') {
-        const photoArray = manifest.photos;
-        console.log(photoArray.reduce(mostRecent).sol);
-    }
+function getPhotos(manifest) {
+    const photoArray = manifest.photos;
+    const newPhotoArray = photoArray.map(info);
+    return displayPhotos(newPhotoArray);
 }
-function mostRecent(acc, cur) {
-    if (Date.parse(acc.earth_date) >= Date.parse(cur.earth_date)) {
-        return acc;
-    }
-    else {
-        return cur;
-    }
-}
-    //console.log(apod.image.url);
-    //console.log(photodate);
-    //console.log(photodate.getDate(), today.getDate());
-    //console.log(photodate.getDate() === today.getDate());
-    //const photoManifest = manifest.photos.photo_manifest;
-    //const photos = rawData.photos;
-    //photoArray = photos.map(info);
-    //getHtml = displayPhotos(photoArray);
 const info = (photo) => {
     return {
-        launch: photo.rover.launch_date,
-        land: photo.rover.landing_date,
-        status: photo.rover.status,
+        date: photo.earth_date,
         img: photo.img_src
     }
 }
 const displayPhotos = (relevantInfo) => {
-    relevantInfo.forEach(x => {
+    //console.log(relevantInfo);
+   relevantInfo.forEach(x => {
         const url = x.img;
-        const launch = x.launch;
-        const land = x.land;
-        const status = x.status;
-        document.getElementById('photos').innerHTML += `<div class="rover-item"><img src="${url}"><p><b>Launch Date:</b> ${launch}</p><p><b>Landing Date:</b> ${land}</p><p><b>Status:</b> ${status}</p></div>`;
+        const date = x.date;
+        const photos = document.getElementById('photos');
+        photos.innerHTML += `<div class="rover-item"><img src="${url}"><p><span class="uppercase">Taken:</span> ${date}</div>`;
     });
-    //console.log(trythis);
+    ////console.log(trythis);
 }
 
 

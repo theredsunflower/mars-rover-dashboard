@@ -11,8 +11,8 @@ body, h1, h2, h3, h4, h5, h6, p, ol, ul, li {
   margin: 0;
   padding: 0;
   font-weight: normal;
+  font-family: 'Roboto Mono', monospace;
 }
-
 ol, ul {
   list-style: none;
 }
@@ -21,10 +21,30 @@ img {
   max-width: 100%;
   height: auto;
 }
+h1 {
+  font-size: 60px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  padding: 5px;
+  font-family: 'Comfortaa', sans-serif;
+}
+h2 {
+  font-size: 30px;
+  padding: 3px;
+}
+h3 {
+  font-size: 26px;
+  padding: 3px;
+}
 header {
   background: black;
   color: white;
-  padding: 10px;
+  padding: 20px;
+  border-bottom: 1px solid white;
+}
+.uppercase {
+  text-transform: uppercase;
+  font-weight: normal;
 }
 #main-menu ul {
   align-items: center;
@@ -32,38 +52,92 @@ header {
   justify-content: center;
 }
 .menu-item {
-  font-size: 20px;
+  font-size: 14px;
+  margin: 5px 10px 5px 10px;
+  padding: 7px;
+  border: 1px solid white;
+}
+.menu-item:hover {
+  cursor: pointer;
   background-color: white;
+  border-color: black;
   color: black;
-  margin: 5px;
-  padding: 10px;
-  border-radius: 2px;
 }
 body {
   display: flex;
   flex-direction: column;
   font-family: Arial;
   min-height: 100vh;
+  background-color: black;
+  color: white;
 }
 main {
   padding: 2.5%;
+
 }
 #photos {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
 }
+#photos h3 {
+  text-align: center;
+  width: 100%;
+  padding: 30px;
+}
 .rover-item {
-  width: calc(50% - 10px);
+  width: calc(100% - 10px);
   margin: 5px;
   padding: 10px;
   border-radius: 4px;
-  background-color: lightblue;
 }
 .rover-heading {
   text-transform: uppercase;
   text-align: center;
   width: 100%;
-  font-size: 40px;
+  font-size: 50px;
   letter-spacing: 4px;
+  padding: 0;
+  margin-bottom: 40px;
+}
+.subheading {
+  text-align: center;
+  font-size: 16px;
+}
+#sitename {
+  width: 100%;
+  text-align: center;
+  margin: 20px 0 20px 0;
+}
+#footer {
+  background: black;
+  width: 100%;
+  text-align: center;
+}
+#footer a {
+  color: white;
+}
+#home:hover {
+  cursor: pointer;
+  color: darkred;
+}
+@media only screen and (min-width: 375px) {
+  .menu-item {
+    font-size: 16px;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .rover-item {
+    width: calc(50% - 10px);
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .rover-item {
+    width: calc((100% / 3) - 10px);
+  }
+}
+@media only screen and (min-width: 1900px) {
+  main {
+    padding: 2.5% 10% 2.5% 10%;
+  }
 }
