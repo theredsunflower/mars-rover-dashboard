@@ -60,3 +60,10 @@ main {
   border-radius: 4px;
   background-color: lightblue;
 }
+.rover-heading {
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  font-size: 40px;
+  letter-spacing: 4px;
+}

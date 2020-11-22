@@ -5,7 +5,7 @@ let store = {
 }
 
 // add our markup to the page
-const root = document.getElementById('root');
+const root = document.getElementById('info');
 const photos = document.getElementById('photos');
 
 const updateStore = (store, newState) => {
@@ -14,9 +14,7 @@ const updateStore = (store, newState) => {
     render(root, store);
 }
 
-const render = async (root, state) => {
-    root.innerHTML = App(state)
-}
+
 
 // create content
 const App = (state) => {
@@ -32,21 +30,22 @@ const App = (state) => {
 window.addEventListener('load', () => {
     render(root, store);
     document.getElementById('curiosity').addEventListener('click', function() {
-        clearScreen('root');
+        clearScreen('info');
         clearScreen('photos');
-        getPhotos('curiosity');
+        getRoverData('curiosity');
     });
     document.getElementById('opportunity').addEventListener('click', function() {
-        clearScreen('root');
+        clearScreen('info');
         clearScreen('photos');
-        getPhotos('opportunity');
+        getRoverData('opportunity');
     });
     document.getElementById('spirit').addEventListener('click', function() {
-        clearScreen('root');
+        clearScreen('info');
         clearScreen('photos');
-        getPhotos('spirit');
+        getRoverData('spirit');
     });
     document.getElementById('home').addEventListener('click', function() {
+        clearScreen('info');
         clearScreen('photos');
         render(root, store);
     });
@@ -54,19 +53,6 @@ window.addEventListener('load', () => {
 
 
 // ------------------------------------------------------  COMPONENTS
-
-// Pure function that renders conditional information -- THIS IS JUST AN EXAMPLE, you can delete it.
-const Greeting = (name) => {
-    if (name) {
-        return `
-            <h1>Welcome, ${name}!</h1>
-        `
-    }
-
-    return `
-        <h1>Hello!</h1>
-    `
-}
 
 // Example of a pure function that renders infomation requested from the backend
 const ImageOfTheDay = (apod) => {
@@ -109,35 +95,68 @@ const getImageOfTheDay = (state) => {
             //console.log(apod);
             updateStore(store, {apod})
         })
-        //.then(apod => updateStore(store, { apod }))
-    return state
+    return state;
 }
-const getPhotos = (rover) => {
+const render = async (root, state) => {
+    root.innerHTML = App(state)
+}
+const getRoverData = async (rover) => {
     fetch(`http://localhost:3000/${rover}`)
-    .then(res => res.json())
-    .then((photos) => {
-        renderPhotos(Object.values(photos)[0]);;
+    .then(res => res.json()).then((data) => {
+        console.log(data.manifest.photos);
+        return;
     })
+    /*.then((data) => {
+        const info = document.getElementById('info');
+        const photos = document.getElementById('photos');
+        info.innerHTML = getHeading(data);
+        photos.innerHTML += getPhotos(data);
+    });*/
+   /* .then((data) => {
+        getHeading(rover);
+        getRoverInfo(rover)
+        getPhotos(data);
+       // return Object.values(data));
+    });*/
 }
 
-function renderPhotos(photos) {
-    const photoArray = photos.photos;
-    //console.log(photoArray);
-    const adjustedArray = photoArray.map(info);
-    const newHTML = displayPhotos(adjustedArray);
-    //console.log(adjustedArray);
+function getHeading (data) {
+    const manifest = Object.values(data)[0].photo_manifest;
+    return `<h2>${manifest.name}</h2><p><b>Launch Date:</b> ${manifest.launch_date}<br><b>Landing Date:</b> ${manifest.landing_date}<br><b>Status:</b> ${manifest.status}<br><b>Last Updated:</b> ${manifest.max_date}`;
+    //return document.getElementById('photos').innerHTML += `<h2 class="rover-heading">${rover}</h2>`;
 }
 
+function getPhotos(data) {
+    const manifest = Object.values(data)[0].photo_manifest;
+    if (manifest.status === 'active') {
+        const photoArray = manifest.photos;
+        console.log(photoArray.reduce(mostRecent).sol);
+    }
+}
+function mostRecent(acc, cur) {
+    if (Date.parse(acc.earth_date) >= Date.parse(cur.earth_date)) {
+        return acc;
+    }
+    else {
+        return cur;
+    }
+}
+    //console.log(apod.image.url);
+    //console.log(photodate);
+    //console.log(photodate.getDate(), today.getDate());
+    //console.log(photodate.getDate() === today.getDate());
+    //const photoManifest = manifest.photos.photo_manifest;
+    //const photos = rawData.photos;
+    //photoArray = photos.map(info);
+    //getHtml = displayPhotos(photoArray);
 const info = (photo) => {
-    const relevantInfo = {
+    return {
         launch: photo.rover.launch_date,
         land: photo.rover.landing_date,
         status: photo.rover.status,
         img: photo.img_src
     }
-    return relevantInfo;
 }
-
 const displayPhotos = (relevantInfo) => {
     relevantInfo.forEach(x => {
         const url = x.img;
@@ -148,12 +167,18 @@ const displayPhotos = (relevantInfo) => {
     });
     //console.log(trythis);
 }
-//Launch Date, Landing Date, Status, Most recently available photos, date most recent photos were taken
 
-function renderImg (url) {
-    console.log(url);
-}
+
 
 function clearScreen(element) {
     document.getElementById(element).innerHTML = '';
+}
+
+const currentDate = () => {
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const dateString = `${year}-${month}-${day}`;
+    return dateString;
 }
