@@ -50,7 +50,7 @@ app.get('/opportunity', async (req, res) => {
         })
         .then(getSol).then(async (obj) => {
             const sol = obj[1];
-            const recentPhotos = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?sol=${sol}&page=1&api_key=${process.env.API_KEY}`).then(res2 => res2.json());
+            const photos = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/opportunity/photos?sol=${sol}&page=1&api_key=${process.env.API_KEY}`).then(res2 => res2.json());
             return photos;
         });
         res.send({manifest});
