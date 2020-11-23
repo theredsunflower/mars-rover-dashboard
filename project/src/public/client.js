@@ -2,7 +2,7 @@
 window.addEventListener('load', () => {
     //get most recent photo
     getMostRecent();
-    //add event listeners for menu buttons
+    //When button is clicked, get relevant rover data
     document.getElementById('curiosity').addEventListener('click', function() {
         getRoverData('curiosity');
     });
@@ -17,8 +17,9 @@ window.addEventListener('load', () => {
     });
 })
 
-
-//When page loads get most recent photo from active mars rover
+/**
+* @description Get most recent photo from active mars rover and append to DOM
+*/
 function getMostRecent() {
     document.getElementById('info').style.display = "block";
     document.getElementById('rover').style.display = "none";
@@ -34,6 +35,7 @@ function getMostRecent() {
         const status = today.rover.status;
         const img = today.img_src;
         const mostRecent = `<img alt="most-recent-photo" src="${img}"><div id="most-recent-photo-info"><p><span class="uppercase">Earth Date: </span>${eDate}<br><span class="uppercase">Martian Sol: ${solD}</span><br><span class="uppercase">Rover Name: </span>${rover}<br><span class="uppercase">Status: </span>${status}</p><button id="fp-see-more">See More</button>`;
+        //update most recent photo div with most recent photo
         return document.getElementById('most-recent-photo').innerHTML = mostRecent;
     })
     .then((mostRecent) => {
@@ -46,7 +48,10 @@ function getMostRecent() {
 }
 
 
-//get appropriate data for rover
+/**
+* @description Get rover data and append to DOM
+* @param {string} rover name
+*/
 const getRoverData = async (rover) => {
     document.getElementById('info').style.display = "none";
     document.getElementById('rover').style.display = "block";
@@ -63,22 +68,16 @@ const getRoverData = async (rover) => {
         return data;
     })
     .then((data) => {
-        const later = document.createElement('div');
-        later.id = "rover-nav";
-        later.innerHTML = `<button id="previous">Previous Sol >></button>`;
-        document.getElementById('rover-photos').appendChild(later);
-        return data;
-    })
-    .then((data) => {
-        const previous = document.getElementById("previous");
-        const currentSol = data;
-        previous.addEventListener('click', () => {
-            console.log(currentSol.first()[0].photo_manifest);
-        })
+        addListeners(navInit(data));
     });
 }
 
-//add an appropriate header to each rover page
+/**
+* @description Add appropriate header to rover page DOM
+* @param {object} rover data
+* @param Get request
+* @returns HTML for rover heading
+*/
 function getHeading (manifest) {
     if(manifest.status === 'active') {
         return `<h2 class="rover-heading"><span class="subheading">Rover Name: </span><br>${manifest.name}</h2><p><span class="uppercase">Launch Date:</span> ${manifest.launch_date}<br><span class="uppercase">Landing Date:</span> ${manifest.landing_date}<br><span class="uppercase">Last Updated:</span> ${manifest.max_date}<br><span class="uppercase">Status: </span><span class="yellow">${manifest.status}</span></p>`
@@ -88,20 +87,33 @@ function getHeading (manifest) {
     };
 }
 
-//Get appropriate photo data from manifest
+/**
+* @description Get appropriate photo data from manifest
+* @param {object} rover data
+* @returns displayPhotos function
+*/
 function getPhotos(manifest) {
     const photoArray = manifest.photos;
     const newPhotoArray = photoArray.map(info);
     return displayPhotos(newPhotoArray);
 }
-//create new array with relevant photo info only
+
+/**
+* @description Get appropriate photo data from manifest
+* @param {object} with photo data
+* @returns array with relevant photo info
+*/
 const info = (photo) => {
     return {
         date: photo.earth_date,
         img: photo.img_src
     }
 }
-//append photos to dom
+
+/**
+* @description Append photos and data to dom
+* @param {object} with photo data
+*/
 const displayPhotos = (relevantInfo) => {
    relevantInfo.forEach(x => {
         const url = x.img;
@@ -109,4 +121,61 @@ const displayPhotos = (relevantInfo) => {
         const photos = document.getElementById('photos');
         return document.getElementById('rover-photos').innerHTML += `<div class="rover-item"><img src="${url}"><p><span class="uppercase">Taken:</span> ${date}</div>`;
     });
+}
+
+/**
+* @description Append nav element to DOM
+* @param {object} with photo data
+* @returns rover data
+*/
+function navInit(data) {
+    document.getElementById('rover-nav').innerHTML = `<button id="previous">More Photos</button>`;
+    return data;
+}
+
+/**
+* @description Add event listener to Nav element to load more photos
+* @param {object} rover data
+*/
+function addListeners(data) {
+    const rname = data.first()[0].photo_manifest.name;
+    const max_sol = data.first()[0].photo_manifest.max_sol;
+    console.log(max_sol);
+    let currentSol = max_sol; 
+    document.getElementById('previous').addEventListener('click', function() {
+        changeSol(true);
+        getMorePhotos(rname, currentSol);
+        if (currentSol <= 0) {
+            document.getElementById('previous').style.display = "none";        
+        }       
+    });
+    //update sol
+     function changeSol (bool) {
+        if(bool) {
+            currentSol = currentSol - 1;
+            return currentSol;
+        }
+        else {
+            currentSol = currentSol + 1;
+            return currentSol;
+        }
+     }
+}
+
+/**
+* @description Load more photos
+* @param {string} rover name
+* @param {number} current sol
+*/
+const getMorePhotos = async (rover, sol) => {
+    fetch(`http://localhost:3000/more-photos/?rover=${rover}&sol=${sol}`)
+    .then(res => res.json())
+    .then((res) => {
+        if(res.photos.length === 0) {
+            return document.getElementById('rover-photos').innerHTML += `<div class="rover-item"><p><span class="uppercase">No photos available for sol ${sol}. Please try again.</span></p></div>`;
+        }
+        else {
+            getPhotos(res);
+        }
+    })
 }
