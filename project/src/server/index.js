@@ -28,7 +28,6 @@ app.get('/more-photos', async (req, res) => {
     const query = url_parts.query;
     const rover = query.rover;
     const sol = query.sol;
-    console.log(query);
     try {
         const morePhotos = await fetch(`https://api.nasa.gov/mars-photos/api/v1/rovers/${rover}/photos?sol=${sol}&api_key=${process.env.API_KEY}`)
         .then(res2 => res2.json())

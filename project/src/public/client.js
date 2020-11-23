@@ -140,7 +140,6 @@ function navInit(data) {
 function addListeners(data) {
     const rname = data.first()[0].photo_manifest.name;
     const max_sol = data.first()[0].photo_manifest.max_sol;
-    console.log(max_sol);
     let currentSol = max_sol; 
     document.getElementById('previous').addEventListener('click', function() {
         changeSol(true);

@@ -1,0 +1,183 @@
+html {
+  box-sizing: border-box;
+  font-size: 16px;
+}
+
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+body, h1, h2, h3, h4, h5, h6, p, ol, ul, li {
+  margin: 0;
+  padding: 0;
+  font-weight: normal;
+  font-family: 'Roboto Mono', monospace;
+}
+ol, ul {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+}
+h1 {
+  font-size: 60px;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  padding: 5px;
+  font-family: 'Comfortaa', sans-serif;
+}
+h2 {
+  font-size: 30px;
+  padding: 3px;
+}
+h3 {
+  font-size: 26px;
+  padding: 3px;
+}
+header {
+  background: black;
+  color: white;
+  padding: 20px;
+  border-bottom: 1px solid white;
+}
+button {
+  background-color: white;
+  font-size: 18px;
+  font-family: 'Comfortaa', sans-serif;
+  padding: 10px;
+  margin: 10px 0 10px 0;
+  border: none;
+}
+button:hover {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+}
+.uppercase {
+  text-transform: uppercase;
+  font-weight: normal;
+}
+#main-menu ul {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+}
+.menu-item {
+  font-size: 14px;
+  margin: 5px 10px 5px 10px;
+  padding: 7px;
+  border: 1px solid white;
+}
+.menu-item:hover {
+  cursor: pointer;
+  background-color: white;
+  border-color: black;
+  color: black;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  font-family: Arial;
+  min-height: 100vh;
+  background-color: black;
+  color: white;
+}
+main {
+  padding: 2.5%;
+
+}
+#rover-photos {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+}
+.rover-item {
+  width: calc(100% - 10px);
+  margin: 5px;
+  padding: 10px;
+  border-radius: 4px;
+}
+.rover-heading {
+  text-transform: uppercase;
+  text-align: center;
+  width: 100%;
+  font-size: 50px;
+  letter-spacing: 4px;
+  padding: 0;
+  margin-bottom: 40px;
+}
+#rover-nav {
+  width: 100%;
+  text-align: center;
+}
+.subheading {
+  text-align: center;
+  font-size: 16px;
+}
+#sitename {
+  width: 100%;
+  text-align: center;
+  margin: 20px 0 20px 0;
+}
+#footer {
+  background: black;
+  width: 100%;
+  text-align: center;
+  padding: 20px;
+}
+#footer a {
+  color: white;
+}
+.flash:hover {
+  cursor: pointer;
+  background-color: white;
+  color: black;
+}
+.intro {
+  font-size: 30px;
+  text-align: center;
+  padding: 20px;
+  margin: 30px 0 30px 0;
+}
+.loader {
+  text-align: center;
+  margin: 40px 0 40px 0;
+}
+.yellow {
+  color: yellow;
+}
+.green {
+  color: lightgreen;
+}
+@media only screen and (min-width: 375px) {
+  .menu-item {
+    font-size: 16px;
+  }
+}
+@media only screen and (min-width: 750px) {
+  .rover-item {
+    width: calc(50% - 10px);
+  }
+  #info {
+    padding: 0 10% 0 10%;
+  }
+}
+@media only screen and (min-width: 1200px) {
+  .rover-item {
+    width: calc((100% / 3) - 10px);
+  }
+  #info {
+    padding: 0 20% 0 20%;
+  }
+}
+@media only screen and (min-width: 1900px) {
+  main {
+    padding: 2.5% 10% 2.5% 10%;
+  }
+  #info {
+    padding: 0 25% 0 25%;
+  }
+}
