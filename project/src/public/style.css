@@ -42,6 +42,20 @@ header {
   padding: 20px;
   border-bottom: 1px solid white;
 }
+button {
+  background-color: white;
+  font-size: 18px;
+  font-family: 'Comfortaa', sans-serif;
+  padding: 10px;
+  margin: 10px 0 10px 0;
+  border: none;
+}
+button:hover {
+  background-color: black;
+  color: white;
+  border: 1px solid white;
+  cursor: pointer;
+}
 .uppercase {
   text-transform: uppercase;
   font-weight: normal;
@@ -113,13 +127,25 @@ main {
   background: black;
   width: 100%;
   text-align: center;
+  padding: 20px;
 }
 #footer a {
   color: white;
 }
 #home:hover {
   cursor: pointer;
-  color: darkred;
+  background-color: white;
+  color: black;
+}
+.intro {
+  font-size: 30px;
+  text-align: center;
+  padding: 20px;
+  margin: 30px 0 30px 0;
+}
+.loader {
+  text-align: center;
+  margin: 40px 0 40px 0;
 }
 @media only screen and (min-width: 375px) {
   .menu-item {

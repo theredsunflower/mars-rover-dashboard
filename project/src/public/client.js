@@ -1,118 +1,61 @@
-let store = {
-    user: { name: "Student" },
-    apod: '',
-    rovers: ['Curiosity', 'Opportunity', 'Spirit'],
-}
-
-// add our markup to the page
-const root = document.getElementById('info');
-const photos = document.getElementById('photos');
-
-const updateStore = (store, newState) => {
-    store = Object.assign(store, newState);
-    //console.log(store);
-    render(root, store);
-}
-
-
-
-// create content
-const App = (state) => {
-    let { rovers, apod } = state;
-    return `
-            <div>
-                ${ImageOfTheDay(apod)}
-            </div
-    `;
-}
-
 // listening for load event because page should load before any JS is called
 window.addEventListener('load', () => {
-    render(root, store);
+    //get most recent photo
+    getMostRecent();
+    //add event listeners for menu buttons
     document.getElementById('curiosity').addEventListener('click', function() {
-        clearScreen('info');
-        clearScreen('photos');
         getRoverData('curiosity');
     });
     document.getElementById('opportunity').addEventListener('click', function() {
-        clearScreen('info');
-        clearScreen('photos');
         getRoverData('opportunity');
     });
     document.getElementById('spirit').addEventListener('click', function() {
-        clearScreen('info');
-        clearScreen('photos');
         getRoverData('spirit');
     });
     document.getElementById('home').addEventListener('click', function() {
-        clearScreen('info');
-        clearScreen('photos');
-        render(root, store);
+        getMostRecent();
     });
 })
-
 
 // ------------------------------------------------------  COMPONENTS
 
 // Example of a pure function that renders infomation requested from the backend
-const ImageOfTheDay = (apod) => {
-    // If image does not already exist, or it is not from today -- request it again
-    const today = new Date();
-    const photodate = new Date(apod.date);
-    //console.log(apod.image.url);
-    //console.log(photodate);
-    //console.log(photodate.getDate(), today.getDate());
-    //console.log(photodate.getDate() === today.getDate());
-
-    if (!apod || apod.date === today.getDate() ) {
-        getImageOfTheDay(store);
+function getMostRecent() {
+    document.getElementById('info').style.display = "block";
+    document.getElementById('rover').style.display = "none";
+    fetch(`http://localhost:3000/curiosity`)
+    .then(res => res.json())
+    .then((some) => {
+        const today = some.manifest[1].photos[0];
+        const eDate = today.earth_date;
+        const solD = today.sol;
+        const rover = today.rover.name;
+        const status = today.rover.status;
+        const img = today.img_src;
+        const mostRecent = `<img alt="most-recent-photo" src="${img}"><div id="most-recent-photo-info"><p><span class="uppercase">Earth Date: </span>${eDate}<br><span class="uppercase">Martian Sol: ${solD}</span><br><span class="uppercase">Rover Name: </span>${rover}<br><span class="uppercase">Status: </span>${status}</p><button id="fp-see-more">See More</button>`;
+        return document.getElementById('most-recent-photo').innerHTML = mostRecent;
+    })
+    .then((mostRecent) => {
+        document.getElementById('fp-see-more').addEventListener('click', function() {
+            getRoverData('curiosity');
+        });
         return;
-    }
-    // check if the photo of the day is actually type video!
-    if (apod.image.media_type === "video") {
-        return (`
-            <p>See today's featured video <a href="${apod.image.url}">here</a></p>
-            <p>${apod.image.title}</p>
-            <p>${apod.image.explanation}</p>
-        `)
-    } else {
-        return (`
-            <img src="${apod.image.url}" height="350px" width="100%" />
-            <p>${apod.image.explanation}</p>
-        `)
-    }
+    });
+            
+    return;
 }
-
 // ------------------------------------------------------  API CALLS
 
-// Example API call
-const getImageOfTheDay = (state) => {
-    let { apod } = state;
-    //console.log({apod});
-    fetch(`http://localhost:3000/apod`)
-        .then(res => res.json())
-        .then((apod) => {
-            //console.log(apod);
-            updateStore(store, {apod})
-        })
-    return state;
-}
-const render = async (root, state) => {
-    root.innerHTML = App(state)
-}
 const getRoverData = async (rover) => {
+    document.getElementById('info').style.display = "none";
+    document.getElementById('rover').style.display = "block";
+    document.getElementById('rover-info').innerHTML = `<h2 class="loader">Loading...</h2>`;
+    document.getElementById('rover-photos').innerHTML = '';
     fetch(`http://localhost:3000/${rover}`)
     .then(res => res.json())
     .then((data) => {
-        const info = document.getElementById('info');
-        info.innerHTML = getHeading(data.manifest[0]);
-        document.getElementById('photos').innerHTML += `<h3>Latest Activity</h3>`;
-        getPhotos(data.manifest[1]);
-        if(data.manifest[0].status === 'complete') {
-            document.getElementById('photos').innerHTML += `<h2 class="rover-heading">Old Photos</h2>`;
-            getPhotos(data.manifest[2]);
-        }        
-        return
+        document.getElementById('rover-info').innerHTML = `${getHeading(data.manifest[0])}`;
+        return getPhotos(data.manifest[1]);
     });
 }
 
@@ -132,27 +75,10 @@ const info = (photo) => {
     }
 }
 const displayPhotos = (relevantInfo) => {
-    //console.log(relevantInfo);
    relevantInfo.forEach(x => {
         const url = x.img;
         const date = x.date;
         const photos = document.getElementById('photos');
-        photos.innerHTML += `<div class="rover-item"><img src="${url}"><p><span class="uppercase">Taken:</span> ${date}</div>`;
+        document.getElementById('rover-photos').innerHTML += `<div class="rover-item"><img src="${url}"><p><span class="uppercase">Taken:</span> ${date}</div>`;
     });
-    ////console.log(trythis);
-}
-
-
-
-function clearScreen(element) {
-    document.getElementById(element).innerHTML = '';
-}
-
-const currentDate = () => {
-    const date = new Date();
-    const day = date.getDate();
-    const month = date.getMonth();
-    const year = date.getFullYear();
-    const dateString = `${year}-${month}-${day}`;
-    return dateString;
 }

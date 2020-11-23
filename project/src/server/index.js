@@ -6,12 +6,13 @@ const path = require('path');
 const app = express();
 const port = 3000;
 const Immutable = require('immutable');
-
+ 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use('/', express.static(path.join(__dirname, '../public')));
 
 // your API calls
+//TODO: replace apod with get most recent photo
 app.get('/apod', async (req, res) => {
     try {
         const apiDate = currentDate();
@@ -22,6 +23,7 @@ app.get('/apod', async (req, res) => {
         console.log('error:', err);
     }
 });
+//accept sol# query strings to add pagination by sol
 app.get('/curiosity', async (req, res) => {
     try {
         const apiDate = currentDate();
@@ -105,24 +107,14 @@ function getSol(data) {
     return [data, data.photo_manifest.max_sol];
 }
 
+const currentDate = () => {
+    const date = new Date();
+    const day = date.getDate();
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const dateString = `${year}-${month}-${day}`;
+    return dateString;
+}
+
 app.listen(port, () => console.log(`Example app listening on port ${port}!`));
 
-const currentDate = () => {
-	const date = new Date();
-	const day = date.getDate();
-	const month = date.getMonth();
-	const year = date.getFullYear();
-	const dateString = `${year}-${month}-${day}`;
-	return dateString;
-}
-
-
-
-function mostRecent(acc, cur) {
-    if (Date.parse(acc.earth_date) >= Date.parse(cur.earth_date)) {
-        return acc;
-    }
-    else {
-        return cur;
-    }
-}
