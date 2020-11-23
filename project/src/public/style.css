@@ -89,15 +89,10 @@ main {
   padding: 2.5%;
 
 }
-#photos {
+#rover-photos {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-}
-#photos h3 {
-  text-align: center;
-  width: 100%;
-  padding: 30px;
 }
 .rover-item {
   width: calc(100% - 10px);
@@ -132,7 +127,7 @@ main {
 #footer a {
   color: white;
 }
-#home:hover {
+.flash:hover {
   cursor: pointer;
   background-color: white;
   color: black;
@@ -147,6 +142,12 @@ main {
   text-align: center;
   margin: 40px 0 40px 0;
 }
+.yellow {
+  color: yellow;
+}
+.green {
+  color: lightgreen;
+}
 @media only screen and (min-width: 375px) {
   .menu-item {
     font-size: 16px;
@@ -156,14 +157,23 @@ main {
   .rover-item {
     width: calc(50% - 10px);
   }
+  #info {
+    padding: 0 10% 0 10%;
+  }
 }
 @media only screen and (min-width: 1200px) {
   .rover-item {
     width: calc((100% / 3) - 10px);
   }
+  #info {
+    padding: 0 20% 0 20%;
+  }
 }
 @media only screen and (min-width: 1900px) {
   main {
     padding: 2.5% 10% 2.5% 10%;
+  }
+  #info {
+    padding: 0 25% 0 25%;
   }
 }

@@ -24,9 +24,11 @@ function getMostRecent() {
     document.getElementById('info').style.display = "block";
     document.getElementById('rover').style.display = "none";
     fetch(`http://localhost:3000/curiosity`)
-    .then(res => res.json())
-    .then((some) => {
-        const today = some.manifest[1].photos[0];
+    .then((res) => {
+        return res.json();
+    })
+    .then((res) => {
+        const today = res.manifest[2].photos[res.manifest[2].photos.length - 1];
         const eDate = today.earth_date;
         const solD = today.sol;
         const rover = today.rover.name;
@@ -40,8 +42,7 @@ function getMostRecent() {
             getRoverData('curiosity');
         });
         return;
-    });
-            
+    });     
     return;
 }
 // ------------------------------------------------------  API CALLS
@@ -53,14 +54,22 @@ const getRoverData = async (rover) => {
     document.getElementById('rover-photos').innerHTML = '';
     fetch(`http://localhost:3000/${rover}`)
     .then(res => res.json())
+    .then((res) => {
+        return Immutable.Map(res);
+    })
     .then((data) => {
-        document.getElementById('rover-info').innerHTML = `${getHeading(data.manifest[0])}`;
-        return getPhotos(data.manifest[1]);
+        document.getElementById('rover-info').innerHTML = `${getHeading(data.first()[0].photo_manifest)}`;
+        return getPhotos(data.first()[2]);
     });
 }
 
 function getHeading (manifest) {
-    return `<h2 class="rover-heading"><span class="subheading">Rover Name: </span><br>${manifest.name}</h2><p><span class="uppercase">Launch Date:</span> ${manifest.launch_date}<br><span class="uppercase">Landing Date:</span> ${manifest.landing_date}<br><span class="uppercase">Last Updated:</span> ${manifest.max_date}<br><span class="uppercase">Status:</span> ${manifest.status}`;
+    if(manifest.status === 'active') {
+        return `<h2 class="rover-heading"><span class="subheading">Rover Name: </span><br>${manifest.name}</h2><p><span class="uppercase">Launch Date:</span> ${manifest.launch_date}<br><span class="uppercase">Landing Date:</span> ${manifest.landing_date}<br><span class="uppercase">Last Updated:</span> ${manifest.max_date}<br><span class="uppercase">Status: </span><span class="yellow">${manifest.status}</span></p>`
+    }
+    else {
+        return `<h2 class="rover-heading"><span class="subheading">Rover Name: </span><br>${manifest.name}</h2><p><span class="uppercase">Launch Date:</span> ${manifest.launch_date}<br><span class="uppercase">Landing Date:</span> ${manifest.landing_date}<br><span class="uppercase">Last Updated:</span> ${manifest.max_date}<br><span class="uppercase">Status: </span><span class="green">${manifest.status}</span></p>`
+    };
 }
 
 function getPhotos(manifest) {
@@ -79,6 +88,6 @@ const displayPhotos = (relevantInfo) => {
         const url = x.img;
         const date = x.date;
         const photos = document.getElementById('photos');
-        document.getElementById('rover-photos').innerHTML += `<div class="rover-item"><img src="${url}"><p><span class="uppercase">Taken:</span> ${date}</div>`;
+        return document.getElementById('rover-photos').innerHTML += `<div class="rover-item"><img src="${url}"><p><span class="uppercase">Taken:</span> ${date}</div>`;
     });
 }
