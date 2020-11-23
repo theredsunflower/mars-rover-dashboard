@@ -109,6 +109,10 @@ main {
   padding: 0;
   margin-bottom: 40px;
 }
+#rover-nav {
+  width: 100%;
+  text-align: center;
+}
 .subheading {
   text-align: center;
   font-size: 16px;

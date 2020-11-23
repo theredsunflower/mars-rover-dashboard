@@ -38,7 +38,6 @@ const fetchData = async (rname, req, res) => {
             const intArray = arr.set(arr.size, photos);
             return intArray;
         })
-        //console.log(manifest);
         res.send({manifest});
     } 
     catch (err) {

@@ -17,9 +17,8 @@ window.addEventListener('load', () => {
     });
 })
 
-// ------------------------------------------------------  COMPONENTS
 
-// Example of a pure function that renders infomation requested from the backend
+//When page loads get most recent photo from active mars rover
 function getMostRecent() {
     document.getElementById('info').style.display = "block";
     document.getElementById('rover').style.display = "none";
@@ -45,8 +44,9 @@ function getMostRecent() {
     });     
     return;
 }
-// ------------------------------------------------------  API CALLS
 
+
+//get appropriate data for rover
 const getRoverData = async (rover) => {
     document.getElementById('info').style.display = "none";
     document.getElementById('rover').style.display = "block";
@@ -59,10 +59,26 @@ const getRoverData = async (rover) => {
     })
     .then((data) => {
         document.getElementById('rover-info').innerHTML = `${getHeading(data.first()[0].photo_manifest)}`;
-        return getPhotos(data.first()[2]);
+        getPhotos(data.first()[2]);
+        return data;
+    })
+    .then((data) => {
+        const later = document.createElement('div');
+        later.id = "rover-nav";
+        later.innerHTML = `<button id="previous">Previous Sol >></button>`;
+        document.getElementById('rover-photos').appendChild(later);
+        return data;
+    })
+    .then((data) => {
+        const previous = document.getElementById("previous");
+        const currentSol = data;
+        previous.addEventListener('click', () => {
+            console.log(currentSol.first()[0].photo_manifest);
+        })
     });
 }
 
+//add an appropriate header to each rover page
 function getHeading (manifest) {
     if(manifest.status === 'active') {
         return `<h2 class="rover-heading"><span class="subheading">Rover Name: </span><br>${manifest.name}</h2><p><span class="uppercase">Launch Date:</span> ${manifest.launch_date}<br><span class="uppercase">Landing Date:</span> ${manifest.landing_date}<br><span class="uppercase">Last Updated:</span> ${manifest.max_date}<br><span class="uppercase">Status: </span><span class="yellow">${manifest.status}</span></p>`
@@ -72,17 +88,20 @@ function getHeading (manifest) {
     };
 }
 
+//Get appropriate photo data from manifest
 function getPhotos(manifest) {
     const photoArray = manifest.photos;
     const newPhotoArray = photoArray.map(info);
     return displayPhotos(newPhotoArray);
 }
+//create new array with relevant photo info only
 const info = (photo) => {
     return {
         date: photo.earth_date,
         img: photo.img_src
     }
 }
+//append photos to dom
 const displayPhotos = (relevantInfo) => {
    relevantInfo.forEach(x => {
         const url = x.img;
